@@ -7,8 +7,7 @@ set -eu
 CATALOG=http://iceberg-rest:8181
 PROJECT_ID=00000000-0000-0000-0000-000000000000
 
-echo "Waiting for the S3 storage..."
-until mc alias set s3 http://minio:9000 minioadmin minioadmin >/dev/null 2>&1; do sleep 2; done
+mc alias set s3 http://minio:9000 minioadmin minioadmin >/dev/null
 mc mb --ignore-existing s3/warehouse
 
 case "$(curl -sf "$CATALOG/management/v1/info")" in

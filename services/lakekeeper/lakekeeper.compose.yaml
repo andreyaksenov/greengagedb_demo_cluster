@@ -64,7 +64,7 @@ services:
       iceberg-rest:
         condition: service_healthy
       minio:
-        condition: service_started
+        condition: service_healthy
     networks:
       cluster_network:
         ipv4_address: 192.168.1.133

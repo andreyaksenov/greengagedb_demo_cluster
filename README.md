@@ -9,7 +9,8 @@ Greengage DB, PXF, and `gpbackup` are installed from the official Greengage DB A
   JDK 17 required by PXF is installed from the Ubuntu repository.
 - The `gpbackup` and `gprestore` utilities are installed to _/opt/greengagedb/gpbackup_ and linked to the Greengage DB _bin_ directory.
 
-Environment variables for Greengage DB and PXF are set in [configs/.bashrc](configs/.bashrc), which is mounted to the `gpadmin` home directory on all cluster hosts.
+Environment variables for Greengage DB and PXF are set in [.bashrc](.bashrc), which is mounted to the `gpadmin` home directory on all cluster hosts as _.bashrc_ and _.profile_.
+The [configs](configs) directory is mounted to the coordinator host as _/home/gpadmin/configs_.
 
 The [examples](examples) directory is mounted to the containers to share files with them, for example, scripts and data files used in documentation examples.
 To use another directory, for example, the _examples_ directory of the Greengage DB documentation repository, set its path in the `EXAMPLES_DIR` environment variable or in the _.env_ file:
@@ -208,7 +209,6 @@ $ docker exec -it trino trino --catalog iceberg_hive
    ```shell
    $ docker exec -it cdw bash
    $ su - gpadmin
-   $ source .bashrc
    ```
 2. Initialize a cluster:
    - Create the data storage areas:
@@ -217,14 +217,14 @@ $ docker exec -it trino trino --catalog iceberg_hive
      $ sudo chown gpadmin:gpadmin /data1/coordinator
      $ gpssh -h scdw -e 'sudo -n mkdir -p /data1/coordinator'
      $ gpssh -h scdw -e 'sudo chown gpadmin:gpadmin /data1/coordinator'
-     $ gpssh -f hostfile_segment_hosts -e 'sudo mkdir -p /data1/primary'
-     $ gpssh -f hostfile_segment_hosts -e 'sudo mkdir -p /data1/mirror'
-     $ gpssh -f hostfile_segment_hosts -e 'sudo chown -R gpadmin /data1/*'
+     $ gpssh -f configs/hostfile_segment_hosts -e 'sudo mkdir -p /data1/primary'
+     $ gpssh -f configs/hostfile_segment_hosts -e 'sudo mkdir -p /data1/mirror'
+     $ gpssh -f configs/hostfile_segment_hosts -e 'sudo chown -R gpadmin /data1/*'
      ```
    - Initialize Greengage DB:
      ```shell
-     $ gpinitsystem -c init_config \
-         -h hostfile_segment_hosts \
+     $ gpinitsystem -c configs/init_config \
+         -h configs/hostfile_segment_hosts \
          -s scdw \
          -n en_US.UTF-8
      ```
@@ -259,7 +259,7 @@ Run the following commands on the coordinator host as `gpadmin`:
    ```
 2. (Optional) If you run auxiliary services, copy the PXF server configurations for them (`s3`, `hadoop`, `iceberg`, and `iceberg_hive`) from [configs/pxf/servers](configs/pxf/servers):
    ```shell
-   $ cp -r ~/pxf-servers/* $PXF_BASE/servers/
+   $ cp -r ~/configs/pxf/servers/* $PXF_BASE/servers/
    ```
 3. Synchronize the server configuration to the Greengage DB cluster hosts:
    ```shell
@@ -315,7 +315,6 @@ To start a previously initialized cluster:
    ```shell
    $ docker exec -it cdw bash
    $ su - gpadmin
-   $ source .bashrc
    ```
 3. Start the cluster:
    ```shell

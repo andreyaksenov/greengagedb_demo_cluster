@@ -22,11 +22,9 @@ services:
       - "5432:5432"
     volumes:
       - ${EXAMPLES_DIR:-./examples}:/home/gpadmin/examples
-      - ./configs/pxf/servers:/home/gpadmin/pxf-servers:ro
-      - ./configs/hostfile_all_hosts:/home/gpadmin/hostfile_all_hosts
-      - ./configs/hostfile_segment_hosts:/home/gpadmin/hostfile_segment_hosts
-      - ./configs/init_config:/home/gpadmin/init_config
-      - ./configs/.bashrc:/home/gpadmin/.bashrc
+      - ./configs:/home/gpadmin/configs
+      - ./.bashrc:/home/gpadmin/.bashrc
+      - ./.bashrc:/home/gpadmin/.profile
       - cdw_data:/data1
       - cdw_home:/home/gpadmin
     networks:
@@ -38,7 +36,8 @@ services:
     container_name: scdw
     hostname: scdw
     volumes:
-      - ./configs/.bashrc:/home/gpadmin/.bashrc
+      - ./.bashrc:/home/gpadmin/.bashrc
+      - ./.bashrc:/home/gpadmin/.profile
       - scdw_data:/data1
       - scdw_home:/home/gpadmin
     networks:
@@ -50,7 +49,8 @@ services:
     container_name: sdw1
     hostname: sdw1
     volumes:
-      - ./configs/.bashrc:/home/gpadmin/.bashrc
+      - ./.bashrc:/home/gpadmin/.bashrc
+      - ./.bashrc:/home/gpadmin/.profile
       - sdw1_data:/data1
       - sdw1_home:/home/gpadmin
     networks:
@@ -62,7 +62,8 @@ services:
     container_name: sdw2
     hostname: sdw2
     volumes:
-      - ./configs/.bashrc:/home/gpadmin/.bashrc
+      - ./.bashrc:/home/gpadmin/.bashrc
+      - ./.bashrc:/home/gpadmin/.profile
       - sdw2_data:/data1
       - sdw2_home:/home/gpadmin
     networks:
