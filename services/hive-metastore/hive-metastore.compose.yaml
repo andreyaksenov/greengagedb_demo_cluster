@@ -1,0 +1,22 @@
+services:
+  hive-metastore:
+    image: apache/hive:standalone-metastore-4.2.1
+    container_name: hive-metastore
+    hostname: hive-metastore
+    user: root
+    environment:
+      SERVICE_NAME: metastore
+      DEFAULT_FS: hdfs://namenode:8020
+      HIVE_WAREHOUSE_PATH: /user/hive/warehouse
+      SERVICE_OPTS: -Djavax.jdo.option.ConnectionURL=jdbc:derby:;databaseName=/opt/hive/data/metastore_db;create=true
+    volumes:
+      - hive_metastore_data:/opt/hive/data
+    depends_on:
+      namenode:
+        condition: service_healthy
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.140
+
+volumes:
+  hive_metastore_data:

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property>
+        <name>iceberg.param.uri</name>
+        <value>thrift://hive-metastore:9083</value>
+        <description>Catalog uri</description>
+    </property>
+    <property>
+        <name>iceberg.config.catalog.name</name>
+        <value>iceberg_hive</value>
+        <description>Catalog name</description>
+    </property>
+    <property>
+        <name>iceberg.config.catalog.type</name>
+        <value>HIVE_METASTORE</value>
+        <description>Catalog type</description>
+    </property>
+</configuration>

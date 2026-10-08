@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property>
+        <name>iceberg.param.s3.endpoint</name>
+        <value>http://minio:9000</value>
+        <description>S3 endpoint</description>
+    </property>
+    <property>
+        <name>iceberg.param.s3.path-style-access</name>
+        <value>true</value>
+        <description>S3 path style access</description>
+    </property>
+    <property>
+        <name>iceberg.param.s3.access-key-id</name>
+        <value>minioadmin</value>
+        <description>S3 access key id</description>
+    </property>
+    <property>
+        <name>iceberg.param.s3.secret-access-key</name>
+        <value>minioadmin</value>
+        <description>S3 secret access key</description>
+    </property>
+    <property>
+        <name>iceberg.param.client.region</name>
+        <value>us-east-1</value>
+        <description>AWS region</description>
+    </property>
+    <property>
+        <name>iceberg.param.uri</name>
+        <value>http://iceberg-rest:8181/catalog</value>
+        <description>Catalog uri</description>
+    </property>
+    <property>
+        <name>iceberg.param.warehouse</name>
+        <value>demo</value>
+        <description>Warehouse name</description>
+    </property>
+    <property>
+        <name>iceberg.config.catalog.name</name>
+        <value>iceberg_rest_s3</value>
+        <description>Catalog name</description>
+    </property>
+    <property>
+        <name>iceberg.config.catalog.type</name>
+        <value>REST</value>
+        <description>Catalog type</description>
+    </property>
+</configuration>

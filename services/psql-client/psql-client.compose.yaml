@@ -1,0 +1,13 @@
+services:
+  psql-client:
+    build:
+      context: ./services/psql-client
+      dockerfile: Dockerfile
+    container_name: psql-client
+    hostname: alice
+    domainname: example.com
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.10.55
+        aliases:
+          - alice.example.com

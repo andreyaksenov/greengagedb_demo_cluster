@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: postgres
+    hostname: postgres
+    ports:
+      - "5555:5432"
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.100
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: default
