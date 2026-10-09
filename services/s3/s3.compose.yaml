@@ -1,0 +1,27 @@
+services:
+  minio:
+    image: pgsty/silo:RELEASE.2026-09-16T00-00-00Z
+    container_name: minio
+    hostname: minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MC_HOST_local: http://minioadmin:minioadmin@localhost:9000
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 2s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - ${EXAMPLES_DIR:-./examples}:/examples:ro
+      - minio_data:/data
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.110
+
+volumes:
+  minio_data:

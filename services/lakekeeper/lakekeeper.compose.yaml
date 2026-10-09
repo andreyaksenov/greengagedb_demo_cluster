@@ -1,0 +1,73 @@
+x-lakekeeper-env: &lakekeeper-env
+  LAKEKEEPER__PG_ENCRYPTION_KEY: demo-cluster-encryption-key
+  LAKEKEEPER__PG_DATABASE_URL_READ: postgresql://postgres:postgres@iceberg-rest-db:5432/postgres
+  LAKEKEEPER__PG_DATABASE_URL_WRITE: postgresql://postgres:postgres@iceberg-rest-db:5432/postgres
+
+services:
+  iceberg-rest-db:
+    image: postgres:18
+    container_name: iceberg-rest-db
+    hostname: iceberg-rest-db
+    environment:
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 2s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - iceberg_rest_db_data:/var/lib/postgresql
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.130
+
+  iceberg-rest-migrate:
+    image: quay.io/lakekeeper/catalog:v0.14.0
+    container_name: iceberg-rest-migrate
+    command: ["migrate"]
+    environment: *lakekeeper-env
+    depends_on:
+      iceberg-rest-db:
+        condition: service_healthy
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.131
+
+  iceberg-rest:
+    image: quay.io/lakekeeper/catalog:v0.14.0
+    container_name: iceberg-rest
+    hostname: iceberg-rest
+    command: ["serve"]
+    environment: *lakekeeper-env
+    ports:
+      - "8181:8181"
+    healthcheck:
+      test: ["CMD", "/home/nonroot/lakekeeper", "healthcheck"]
+      interval: 2s
+      timeout: 10s
+      retries: 10
+    depends_on:
+      iceberg-rest-migrate:
+        condition: service_completed_successfully
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.132
+
+  iceberg-rest-init:
+    image: pgsty/silo:RELEASE.2026-09-16T00-00-00Z
+    container_name: iceberg-rest-init
+    entrypoint: ["sh", "/init/init.sh"]
+    volumes:
+      - ./services/lakekeeper/init.sh:/init/init.sh:ro
+      - ./services/lakekeeper/warehouse.json:/init/warehouse.json:ro
+    depends_on:
+      iceberg-rest:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.133
+
+volumes:
+  iceberg_rest_db_data:

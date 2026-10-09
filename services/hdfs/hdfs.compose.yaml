@@ -1,0 +1,47 @@
+x-hdfs-node: &hdfs-node
+  image: apache/hadoop:3.4.3
+  platform: linux/amd64
+  user: root
+
+services:
+  namenode:
+    <<: *hdfs-node
+    container_name: namenode
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    environment:
+      ENSURE_NAMENODE_DIR: /data/name
+    ports:
+      - "9870:9870"
+    healthcheck:
+      test: ["CMD-SHELL", "hdfs dfsadmin -safemode get | grep -q OFF"]
+      interval: 5s
+      timeout: 30s
+      retries: 30
+    volumes:
+      - ./services/hdfs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./services/hdfs/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ${EXAMPLES_DIR:-./examples}:/examples:ro
+      - hdfs_namenode_data:/data
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.120
+
+  datanode:
+    <<: *hdfs-node
+    container_name: datanode
+    hostname: datanode
+    command: ["hdfs", "datanode"]
+    volumes:
+      - ./services/hdfs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./services/hdfs/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - hdfs_datanode_data:/data
+    depends_on:
+      - namenode
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.121
+
+volumes:
+  hdfs_namenode_data:
+  hdfs_datanode_data:

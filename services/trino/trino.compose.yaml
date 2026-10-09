@@ -1,0 +1,12 @@
+services:
+  trino:
+    image: trinodb/trino:483
+    container_name: trino
+    hostname: trino
+    mem_limit: 2g
+    volumes:
+      - ./services/trino/catalog:/etc/trino/catalog:ro
+      - ./services/hdfs/hdfs-site.xml:/etc/trino/hdfs-site.xml:ro
+    networks:
+      cluster_network:
+        ipv4_address: 192.168.1.134
